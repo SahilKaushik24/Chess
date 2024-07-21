@@ -61,3 +61,7 @@ function isCheckMate(board, isWhite) {
     }
     return true
 }
+
+function getValidMoves(piece, isWhite) {
+    
+}
