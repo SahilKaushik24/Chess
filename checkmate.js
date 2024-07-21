@@ -28,7 +28,7 @@ function isSquareUnderAttack(board, isWhite) {
             }
             
         }
-        
+
     }
     return opponentMoves
 }
@@ -62,3 +62,6 @@ function isCheckMate(board, isWhite) {
     return true
 }
 
+function getValidMoves(event) {
+    
+}
