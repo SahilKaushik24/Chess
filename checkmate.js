@@ -23,7 +23,7 @@ function isSquareUnderAttack(board, isWhite) {
         for (let col = 0; col < 8; col++) {
             if (piece !== '' && isOpponentPiece(piece, isWhite)) {
                 const position = `${row}${col}`
-                const moves = getValidMoves(board, piece, positon, null)
+                const moves = getValidMoves(board, piece, position, null)
                 opponentMoves.push(...moves)
             }
             
@@ -56,8 +56,6 @@ function isCheckMate(board, isWhite) {
                 }
             }
         }
-        
-        
     }
     return true
 }
