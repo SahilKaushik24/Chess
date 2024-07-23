@@ -34,7 +34,7 @@ function isSquareUnderAttack(board, isWhite) {
 }
 
 function isOpponentPiece(piece, isWhite) {
-    return isWhite ? piece === piece.toLowerCase() : piece === piece.toLowerCase
+    return isWhite ? piece === piece.toLowerCase() : piece === piece.toUpperCase()
 }
 
 function isCheckMate(board, isWhite) {
