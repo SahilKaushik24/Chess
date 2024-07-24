@@ -92,7 +92,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function handleDrop(event) {
         event.preventDefault();
-
+    
         const imgSrc = event.dataTransfer.getData('text/plain');
         const parentSquare = event.dataTransfer.getData('parent');
         const targetSquare = event.target.getAttribute('data-square') || event.target.parentElement.getAttribute('data-square');
@@ -100,43 +100,58 @@ document.addEventListener('DOMContentLoaded', function() {
         const [endRow, endCol] = targetSquare.split('').map(Number);
         const piece = window.board[startRow][startCol];
         const targetPiece = window.board[endRow][endCol];
-
+    
         if (parentSquare !== targetSquare) {
             const validMoves = getValidMoves(window.board, piece, parentSquare, enPassantTarget);
-
+    
             if (validMoves.includes(targetSquare)) {
-                const pieceElement = document.createElement('img');
-                pieceElement.src = imgSrc;
-                pieceElement.classList.add('piece');
-                pieceElement.setAttribute('draggable', 'true');
-                pieceElement.addEventListener('dragstart', handleDragStart);
-                pieceElement.addEventListener('click', handlePieceClick);
-                pieceElement.addEventListener('dragend', handleDragEnd);
-
-                const targetElement = event.target.getAttribute('data-square') ? event.target : event.target.parentElement;
-                targetElement.innerHTML = '';
-                targetElement.appendChild(pieceElement);
-
-                const parentElement = document.querySelector(`[data-square="${parentSquare}"]`);
-                parentElement.innerHTML = '';
-
-                if (piece.toLowerCase() === 'p' && endCol !== startCol && targetPiece === '') {
-                    const captureRow = isWhiteTurn ? endRow + 1 : endRow - 1;
-                    window.board[captureRow][endCol] = '';
-                    const captureElement = document.querySelector(`[data-square="${captureRow}${endCol}"] img`);
-                    if (captureElement) captureElement.remove();
-                }
-                window.board[endRow][endCol] = piece;
-                window.board[startRow][startCol] = '';
-
-                if (piece.toLowerCase() === 'p' && Math.abs(startRow - endRow) === 2) {
-                    enPassantTarget = { row: (startRow + endRow) / 2, col: startCol };
+                const newBoard = simulateMove(window.board, parentSquare, targetSquare);
+                if (!isKingInCheck(newBoard, piece === piece.toUpperCase())) {
+                    const pieceElement = document.createElement('img');
+                    pieceElement.src = imgSrc;
+                    pieceElement.classList.add('piece');
+                    pieceElement.setAttribute('draggable', 'true');
+                    pieceElement.addEventListener('dragstart', handleDragStart);
+                    pieceElement.addEventListener('click', handlePieceClick);
+                    pieceElement.addEventListener('dragend', handleDragEnd);
+    
+                    const targetElement = event.target.getAttribute('data-square') ? event.target : event.target.parentElement;
+                    targetElement.innerHTML = '';
+                    targetElement.appendChild(pieceElement);
+    
+                    const parentElement = document.querySelector(`[data-square="${parentSquare}"]`);
+                    parentElement.innerHTML = '';
+    
+                    if (piece.toLowerCase() === 'p' && Math.abs(startCol - endCol) === 1 && targetPiece === '') {
+                        const captureRow = piece === piece.toUpperCase() ? endRow + 1 : endRow - 1;
+                        window.board[captureRow][endCol] = '';
+                        const captureElement = document.querySelector(`[data-square="${captureRow}${endCol}"] img`);
+                        if (captureElement) captureElement.remove();
+                    }
+    
+                    window.board[endRow][endCol] = piece;
+                    window.board[startRow][startCol] = '';
+    
+                    if (piece.toLowerCase() === 'p' && Math.abs(startRow - endRow) === 2) {
+                        enPassantTarget = { row: (startRow + endRow) / 2, col: startCol };
+                    } else {
+                        enPassantTarget = null;
+                    }
+    
+                    isWhiteTurn = !isWhiteTurn;
+                    clearHighlights();
+    
+                    if (isKingInCheck(window.board, !isWhiteTurn)) {
+                        console.log('Check!');
+                        if (isCheckmate(window.board, !isWhiteTurn)) {
+                            console.log('Checkmate!');
+                        }
+                    }
                 } else {
-                    enPassantTarget = null;
+                    console.log('Move puts king in check, invalid move.');
                 }
-
-                isWhiteTurn = !isWhiteTurn;
-                clearHighlights();
+            } else {
+                console.log('Invalid move.');
             }
         }
     }
