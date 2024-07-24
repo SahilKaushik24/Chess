@@ -1,61 +1,70 @@
+function simulateMove(board, from, to) {
+    const [fromRow, fromCol] = from.split('').map(Number);
+    const [toRow, toCol] = to.split('').map(Number);
+    const newBoard = JSON.parse(JSON.stringify(board));
+    newBoard[toRow][toCol] = newBoard[fromRow][fromCol];
+    newBoard[fromRow][fromCol] = '';
+    return newBoard;
+}
+
 function isKingInCheck(board, isWhite) {
-    const kingPosition = findKingPosition(board, isWhite)
-    return isSquareUnderAttack(board, kingPosition, isWhite)
+    const kingPosition = findKingPosition(board, isWhite);
+    return isSquareUnderAttack(board, kingPosition, isWhite);
 }
 
 function findKingPosition(board, isWhite) {
-    const king = isWhite ? K : k
+    const king = isWhite ? 'K' : 'k';
     for (let row = 0; row < 8; row++) {
         for (let col = 0; col < 8; col++) {
             if (board[row][col] === king) {
-                return `${row}${col}`
+                return `${row}${col}`;
             }
-            
         }
-        
     }
-    return null
+    return null;
 }
 
-function isSquareUnderAttack(board, isWhite) {
-    const opponentMoves = []
-    for (let row = 0; row < 8; row++) {
-        for (let col = 0; col < 8; col++) {
-            if (piece !== '' && isOpponentPiece(piece, isWhite)) {
-                const position = `${row}${col}`
-                const moves = getValidMoves(board, piece, position, null)
-                opponentMoves.push(...moves)
-            }
-            
-        }
+function isSquareUnderAttack(board, square, isWhite) {
+    const [row, col] = square.split('').map(Number);
+    const opponentMoves = [];
 
+    for (let r = 0; r < 8; r++) {
+        for (let c = 0; c < 8; c++) {
+            const piece = board[r][c];
+            if (piece !== '' && isOpponentPiece(piece, isWhite)) {
+                const position = `${r}${c}`;
+                const moves = getValidMoves(board, piece, position, null);
+                opponentMoves.push(...moves);
+            }
+        }
     }
-    return opponentMoves
+    return opponentMoves.includes(square);
 }
 
 function isOpponentPiece(piece, isWhite) {
-    return isWhite ? piece === piece.toLowerCase() : piece === piece.toUpperCase()
+    return isWhite ? piece === piece.toLowerCase() : piece === piece.toUpperCase();
 }
 
-function isCheckMate(board, isWhite) {
-    if(!isKingInCheck(board, isWhite)) return false
+function isCheckmate(board, isWhite) {
+    if (!isKingInCheck(board, isWhite)) return false;
+
     for (let row = 0; row < 8; row++) {
         for (let col = 0; col < 8; col++) {
-            const piece = board[row][col]
-            if(piece !== "" && (isWhite ? piece === piece.toUpperCase() : piece === piece.toLowerCase())){
-                const position = `${row}${col}`
-                const moves = getValidMoves(board, piece, position, null)
-                for(const move of moves) {
-                    const [newRow, newCol] = move.split('').maop(Number)
-                    const tempBoard = JSON.parse(JSON.stringify(board))
-                    tempBoard[newRow][newCol] = piece
-                    tempBoard[row][col] = ''
-                    if(!isKingInCheck(tempBoard, isWhite)){
-                        return false
+            const piece = board[row][col];
+            if (piece !== '' && (isWhite ? piece === piece.toUpperCase() : piece === piece.toLowerCase())) {
+                const position = `${row}${col}`;
+                const moves = getValidMoves(board, piece, position, null);
+                for (const move of moves) {
+                    const [newRow, newCol] = move.split('').map(Number);
+                    const tempBoard = JSON.parse(JSON.stringify(board));
+                    tempBoard[newRow][newCol] = piece;
+                    tempBoard[row][col] = '';
+                    if (!isKingInCheck(tempBoard, isWhite)) {
+                        return false;
                     }
                 }
             }
         }
     }
-    return true
+    return true;
 }
