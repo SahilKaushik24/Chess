@@ -21,7 +21,6 @@
     display: grid   ;
     grid-template-columns: repeat(8, 80px);
     grid-template-rows: repeat(8, 80px);
-    border: 1px solid black;
     box-shadow: 0 0 30px;
 }
 
@@ -32,6 +31,7 @@
 .square {
     height: 80px;
     width: 80px;
+    border: 1px solid #000;
 }
 
 .black {
@@ -51,6 +51,5 @@
 }
 
 .highlight {
-    background-color: #ffff00;
-    mix-blend-mode: multiply;
+    background-color: rgba(255, 255, 0, 0.6);
 }

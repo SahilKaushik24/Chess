@@ -28,11 +28,11 @@ function isSquareUnderAttack(board, square, isWhite) {
     const [row, col] = square.split('').map(Number);
     const opponentMoves = [];
 
-    for (let r = 0; r < 8; r++) {
-        for (let c = 0; c < 8; c++) {
-            const piece = board[r][c];
+    for (let row = 0; row < 8; row++) {
+        for (let col = 0; col < 8; col++) {
+            const piece = board[row][col];
             if (piece !== '' && isOpponentPiece(piece, isWhite)) {
-                const position = `${r}${c}`;
+                const position = `${row}${col}`;
                 const moves = getValidMoves(board, piece, position, null);
                 opponentMoves.push(...moves);
             }
