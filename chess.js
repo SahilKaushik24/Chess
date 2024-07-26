@@ -71,7 +71,12 @@ document.addEventListener('DOMContentLoaded', function() {
     function handleDragStart(event) {
         const piece = event.target;
         const pieceColor = piece.src.includes('white') ? 'white' : 'black';
-
+    
+        if (piece.src === '') {
+            event.preventDefault();
+            return;
+        }
+    
         if ((isWhiteTurn && pieceColor === 'white') || (!isWhiteTurn && pieceColor === 'black')) {
             event.dataTransfer.setData('text/plain', event.target.src);
             event.dataTransfer.setData('parent', event.target.parentElement.getAttribute('data-square'));
@@ -80,6 +85,7 @@ document.addEventListener('DOMContentLoaded', function() {
             event.preventDefault();
         }
     }
+    
 
     function handleDragOver(event) {
         event.preventDefault();
@@ -160,13 +166,13 @@ document.addEventListener('DOMContentLoaded', function() {
         const square = document.createElement('div');
         square.classList.add('square');
         square.setAttribute('data-square', `${row}${column}`);
-
+    
         if ((row + column) % 2 === 0) {
             square.classList.add('white');
         } else {
             square.classList.add('black');
         }
-
+    
         if (piece) {
             const pieceElement = document.createElement('img');
             pieceElement.src = pieceImages[piece];
@@ -176,12 +182,14 @@ document.addEventListener('DOMContentLoaded', function() {
             pieceElement.addEventListener('click', handlePieceClick);
             pieceElement.addEventListener('dragend', handleDragEnd);
             square.appendChild(pieceElement);
+        } else {
+            square.addEventListener('dragstart', (event) => event.preventDefault());
         }
-
+    
         square.addEventListener('dragover', handleDragOver);
         square.addEventListener('drop', handleDrop);
         return square;
-    }
+    }    
 
     for (let row = 0; row < 8; row++) {
         for (let column = 0; column < 8; column++) {
