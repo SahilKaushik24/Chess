@@ -37,6 +37,11 @@ document.addEventListener('DOMContentLoaded', function() {
         const pieceColor = piece.src.includes('white') ? 'white' : 'black';
 
         if ((isWhiteTurn && pieceColor === 'white') || (!isWhiteTurn && pieceColor === 'black')) {
+            if (selectedPiece) {
+                clearHighlights();
+                selectedPiece = null;
+                selectedPiecePosition = null;
+            }
             selectedPiece = piece;
             selectedPiecePosition = piece.parentElement.getAttribute('data-square');
             highlightValidMoves();
@@ -57,6 +62,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const targetSquare = document.querySelector(`[data-square="${row}${col}"]`);
             if (targetSquare) {
                 targetSquare.classList.add('highlight');
+                targetSquare.addEventListener('click', handleMoveClick);
             }
         });
     }
@@ -65,88 +71,44 @@ document.addEventListener('DOMContentLoaded', function() {
         const highlightedSquares = document.querySelectorAll('.highlight');
         highlightedSquares.forEach(square => {
             square.classList.remove('highlight');
+            square.removeEventListener('click', handleMoveClick);
         });
     }
 
-    function handleDragStart(event) {
-        const piece = event.target;
-        const pieceColor = piece.src.includes('white') ? 'white' : 'black';
-    
-        if (piece.src === '') {
-            event.preventDefault();
-            return;
-        }
-    
-        if ((isWhiteTurn && pieceColor === 'white') || (!isWhiteTurn && pieceColor === 'black')) {
-            event.dataTransfer.setData('text/plain', event.target.src);
-            event.dataTransfer.setData('parent', event.target.parentElement.getAttribute('data-square'));
-            event.target.style.opacity = '0.4';
-        } else {
-            event.preventDefault();
-        }
-    }
-    
-
-    function handleDragOver(event) {
-        event.preventDefault();
-    }
-
-    function handleDragEnd(event) {
-        event.target.style.opacity = '';
-        clearHighlights();
-    }
-
-    function handleDrop(event) {
-        event.preventDefault();
-    
-        const imgSrc = event.dataTransfer.getData('text/plain');
-        const parentSquare = event.dataTransfer.getData('parent');
+    function handleMoveClick(event) {
         const targetSquare = event.target.getAttribute('data-square') || event.target.parentElement.getAttribute('data-square');
-        const [startRow, startCol] = parentSquare.split('').map(Number);
+        const [startRow, startCol] = selectedPiecePosition.split('').map(Number);
         const [endRow, endCol] = targetSquare.split('').map(Number);
         const piece = window.board[startRow][startCol];
         const targetPiece = window.board[endRow][endCol];
-    
-        if (parentSquare !== targetSquare) {
-            const validMoves = getValidMoves(window.board, piece, parentSquare, enPassantTarget);
-    
+
+        if (selectedPiecePosition !== targetSquare) {
+            const validMoves = getValidMoves(window.board, piece, selectedPiecePosition, enPassantTarget);
+
             if (validMoves.includes(targetSquare)) {
-                const newBoard = simulateMove(window.board, parentSquare, targetSquare);
+                const newBoard = simulateMove(window.board, selectedPiecePosition, targetSquare);
                 if (!isKingInCheck(newBoard, piece === piece.toUpperCase())) {
-                    const pieceElement = document.createElement('img');
-                    pieceElement.src = imgSrc;
-                    pieceElement.classList.add('piece');
-                    pieceElement.setAttribute('draggable', 'true');
-                    pieceElement.addEventListener('dragstart', handleDragStart);
-                    pieceElement.addEventListener('click', handlePieceClick);
-                    pieceElement.addEventListener('dragend', handleDragEnd);
-    
-                    const targetElement = event.target.getAttribute('data-square') ? event.target : event.target.parentElement;
-                    targetElement.innerHTML = '';
-                    targetElement.appendChild(pieceElement);
-    
-                    const parentElement = document.querySelector(`[data-square="${parentSquare}"]`);
-                    parentElement.innerHTML = '';
-    
+                    movePiece(selectedPiece, selectedPiecePosition, targetSquare);
+
                     if (piece.toLowerCase() === 'p' && Math.abs(startCol - endCol) === 1 && targetPiece === '') {
                         const captureRow = piece === piece.toUpperCase() ? endRow + 1 : endRow - 1;
                         window.board[captureRow][endCol] = '';
                         const captureElement = document.querySelector(`[data-square="${captureRow}${endCol}"] img`);
                         if (captureElement) captureElement.remove();
                     }
-    
+
                     window.board[endRow][endCol] = piece;
                     window.board[startRow][startCol] = '';
-    
+
                     if (piece.toLowerCase() === 'p' && Math.abs(startRow - endRow) === 2) {
                         enPassantTarget = { row: (startRow + endRow) / 2, col: startCol };
                     } else {
                         enPassantTarget = null;
                     }
-    
+
                     isWhiteTurn = !isWhiteTurn;
                     clearHighlights();
-    
+
                     if (isKingInCheck(window.board, !isWhiteTurn)) {
                         console.log('Check!');
                         if (isCheckmate(window.board, !isWhiteTurn)) {
@@ -160,6 +122,20 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.log('Invalid move.');
             }
         }
+    }
+
+    function movePiece(piece, fromSquare, toSquare) {
+        const pieceElement = document.createElement('img');
+        pieceElement.src = piece.src;
+        pieceElement.classList.add('piece');
+        pieceElement.addEventListener('click', handlePieceClick);
+
+        const targetElement = document.querySelector(`[data-square="${toSquare}"]`);
+        targetElement.innerHTML = '';
+        targetElement.appendChild(pieceElement);
+
+        const fromElement = document.querySelector(`[data-square="${fromSquare}"]`);
+        fromElement.innerHTML = '';
     }
 
     function createSquare(row, column, piece) {
@@ -177,17 +153,9 @@ document.addEventListener('DOMContentLoaded', function() {
             const pieceElement = document.createElement('img');
             pieceElement.src = pieceImages[piece];
             pieceElement.classList.add('piece');
-            pieceElement.setAttribute('draggable', 'true');
-            pieceElement.addEventListener('dragstart', handleDragStart);
             pieceElement.addEventListener('click', handlePieceClick);
-            pieceElement.addEventListener('dragend', handleDragEnd);
             square.appendChild(pieceElement);
-        } else {
-            square.addEventListener('dragstart', (event) => event.preventDefault());
         }
-    
-        square.addEventListener('dragover', handleDragOver);
-        square.addEventListener('drop', handleDrop);
         return square;
     }    
 
