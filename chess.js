@@ -1,5 +1,23 @@
 document.addEventListener('DOMContentLoaded', function() {
+
     const chessBoard = document.getElementById('chess-board');
+    const topLabels = document.getElementById('top-labels');
+    const leftLabels = document.getElementById('left-labels');
+
+    const columns = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+    const rows = ['8', '7', '6', '5', '4', '3', '2', '1'];
+
+    columns.forEach(column => {
+        const topLabel = document.createElement('div');
+        topLabel.textContent = column;
+        topLabels.appendChild(topLabel);
+    });
+
+    rows.forEach(row => {
+        const leftLabel = document.createElement('div');
+        leftLabel.textContent = row;
+        leftLabels.appendChild(leftLabel);
+    });
     const initialBoard = [
         ['r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'],
         ['p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'],
