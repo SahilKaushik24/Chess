@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', function() {
-
     const chessBoard = document.getElementById('chess-board');
     const topLabels = document.getElementById('top-labels');
     const leftLabels = document.getElementById('left-labels');
@@ -18,6 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
         leftLabel.textContent = row;
         leftLabels.appendChild(leftLabel);
     });
+    
     const initialBoard = [
         ['r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'],
         ['p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'],
