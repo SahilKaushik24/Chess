@@ -7,20 +7,19 @@
     <link rel="stylesheet" href="chess.css">
 </head>
 <body>
-    <div id="chess-container">
-        <div id="top-labels" class="labels-row">
-        </div>
+    <div id="chess-container" class="main">
         <div id="board-and-side-labels">
             <div id="left-labels" class="labels-column">
+                <div></div>
             </div>
-            <div id="chess-board">
-            </div>
-            <div id="right-labels" class="labels-column">
+            <div>
+                <div id="top-labels" class="labels-row"></div>
+                <div id="chess-board"></div>
             </div>
         </div>
-        <div id="bottom-labels" class="labels-row">
-        </div>
+        <div id="move-history"></div>
     </div>
+
     <script src="chess.js"></script>
     <script src="moves.js"></script>
     <script src="checkmate.js"></script>

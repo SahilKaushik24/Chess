@@ -5,27 +5,53 @@
 
 .body {
     height: 100vh;
+    display: flex;
     justify-content: center;
     align-items: center;
 }
 
-.chess-container {
-    height: 100%;
-    width: 100%;
+.main {
+    display: flex;
     justify-content: center;
     align-items: center;
-    display: flex;
-    margin-top: 50px;
 }
+
+#chess-container {
+    display: flex;
+}
+
+#board-and-side-labels {
+    display: flex;
+    flex-direction: row;
+}
+
 #chess-board {
-    display: grid   ;
+    display: grid;
     grid-template-columns: repeat(8, 80px);
     grid-template-rows: repeat(8, 80px);
     box-shadow: 0 0 30px;
 }
 
-.main {
-    width: 87.7vh;
+.labels-row {
+    display: grid;
+    grid-template-columns: repeat(8, 80px);
+    margin-bottom: 5px;
+}
+
+.labels-column {
+    display: grid;
+    grid-template-rows: repeat(9, 80px);
+    margin-right: 5px;
+}
+
+.labels-row div, .labels-column div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    font-size: 18px;
+    height: 80px;
+    width: 80px;
 }
 
 .square {
@@ -35,8 +61,7 @@
 }
 
 .black {
-    background-color: #964d22
-
+    background-color: #964d22;
 }
 
 .white {
