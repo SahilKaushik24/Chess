@@ -45,6 +45,7 @@ document.addEventListener('DOMContentLoaded', function() {
         'Q': 'cimg/whitequeen.png',
         'K': 'cimg/whiteking.png'
     };
+
     let isWhiteTurn = true;
     let enPassantTarget = null;
     let selectedPiece = null;
@@ -108,6 +109,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (!isKingInCheck(newBoard, piece === piece.toUpperCase())) {
                     movePiece(selectedPiece, selectedPiecePosition, targetSquare);
 
+                    logMove(selectedPiece.src, selectedPiecePosition, targetSquare);
+
                     if (piece.toLowerCase() === 'p' && Math.abs(startCol - endCol) === 1 && targetPiece === '') {
                         const captureRow = piece === piece.toUpperCase() ? endRow + 1 : endRow - 1;
                         window.board[captureRow][endCol] = '';
@@ -140,6 +143,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.log('Invalid move.');
             }
         }
+    }
+
+    function logMove(pieceSrc, fromSquare, toSquare) {
+        const moveHistory = document.getElementById('move-history');
+        const moveElement = document.createElement('p');
+        const pieceName = pieceSrc.split('/').pop().split('.')[0];
+
+        moveElement.textContent = `${pieceName.toUpperCase()} moved from ${fromSquare} to ${toSquare}`;
+        moveHistory.appendChild(moveElement);
     }
 
     function movePiece(piece, fromSquare, toSquare) {
