@@ -146,6 +146,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function logMove(pieceSrc, fromSquare, toSquare) {
+        
         const moveHistory = document.getElementById('move-history');
         const moveElement = document.createElement('p');
         const pieceName = pieceSrc.split('/').pop().split('.')[0];
