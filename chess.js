@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const rows = ['8', '7', '6', '5', '4', '3', '2', '1'];
 
     columns.forEach(column => {
-        const topLabel = document.createElement('div');
+        const topLabel = document.createElement('div')
         topLabel.textContent = column;
         topLabels.appendChild(topLabel);
     });
