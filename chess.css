@@ -29,7 +29,6 @@
     display: grid;
     grid-template-columns: repeat(8, 80px);
     grid-template-rows: repeat(8, 80px);
-    box-shadow: 0 0 30px;
 }
 
 .labels-row {

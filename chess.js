@@ -85,7 +85,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
-
+ 
     function clearHighlights() {
         const highlightedSquares = document.querySelectorAll('.highlight');
         highlightedSquares.forEach(square => {
