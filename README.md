@@ -1,1 +1,1 @@
-A basic chess game
+A chess game

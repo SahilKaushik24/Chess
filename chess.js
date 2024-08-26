@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
         leftLabel.textContent = row;
         leftLabels.appendChild(leftLabel);
     });
-    
+
     const initialBoard = [
         ['r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'],
         ['p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'],
@@ -144,7 +144,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     }
-
+ 
     function logMove(pieceSrc, fromSquare, toSquare) {
         
         const moveHistory = document.getElementById('move-history');
@@ -156,18 +156,58 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function movePiece(piece, fromSquare, toSquare) {
+        moveHistory.push(JSON.parse(JSON.stringify(window.board)));
+        redoStack = [];
+    
         const pieceElement = document.createElement('img');
         pieceElement.src = piece.src;
         pieceElement.classList.add('piece');
         pieceElement.addEventListener('click', handlePieceClick);
-
+    
         const targetElement = document.querySelector(`[data-square="${toSquare}"]`);
         targetElement.innerHTML = '';
         targetElement.appendChild(pieceElement);
-
+    
         const fromElement = document.querySelector(`[data-square="${fromSquare}"]`);
         fromElement.innerHTML = '';
     }
+
+    let moveHistory = []
+    let redoStack = []
+
+    function undoMove() {
+        if (moveHistory.length > 0) {
+            redoStack.push(JSON.parse(JSON.stringify(window.board)));
+            const lastState = moveHistory.pop();
+            window.board = lastState;
+            updateBoard();
+        }
+    }
+    
+    function redoMove() {
+        if (redoStack.length > 0) {
+            moveHistory.push(JSON.parse(JSON.stringify(window.board)));
+            const nextState = redoStack.pop();
+            window.board = nextState;
+            updateBoard();
+        }
+    }
+
+    function updateBoard() {
+        const chessBoard = document.getElementById('chess-board');
+        chessBoard.innerHTML = '';
+    
+        for (let row = 0; row < 8; row++) {
+            for (let column = 0; column < 8; column++) {
+                const piece = window.board[row][column];
+                const square = createSquare(row, column, piece);
+                chessBoard.appendChild(square);
+            }
+        }
+    }
+
+    document.getElementById('undo-button').addEventListener('click', undoMove)
+    document.getElementById('redo-button').addEventListener('click', redoMove)
 
     function createSquare(row, column, piece) {
         const square = document.createElement('div');
