@@ -4,6 +4,8 @@
 }
 
 .body {
+    margin: 0;
+    padding: 0;
     height: 100vh;
     display: flex;
     justify-content: center;
@@ -41,9 +43,20 @@
     grid-template-rows: repeat(9, 80px);
 }
      
-.labels-row div, .labels-column div {
+.labels-row div {
     display: flex;
     justify-content: center;
+    align-items: end;
+    font-weight: bold;
+    font-size: 18px;
+    height: 80px;
+    width: 80px;
+
+}
+
+.labels-column div {
+    display: flex;
+    justify-content: end;
     align-items: center;
     font-weight: bold;
     font-size: 18px;
@@ -52,16 +65,43 @@
 
 }
 
-.move-history {
-    border-radius: 20px;
+#undo-button {
+    background-color: rgba(0, 0, 0, 0.5);
+    color: azure;
+    width: 50px;
+}
+
+#redo-button {
+    background-color: rgba(0, 0, 0, 0.5);
+    color: azure;
+    width: 50px;
+    margin-left: 70px;
+}
+
+#move-history {
+    margin-left: 20px;
     width: 200px;
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: rgba(0, 0, 0, 0.5);
     color: white;
     padding: 10px;
-    margin-left: 20px;
     height: 100%;
     overflow-y: auto;
-    font-family: Arial, sans-serif;
+    border-radius: 20px;
+}
+
+.timer {
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 100px;
+    margin-top: 80px;
+}
+
+#left-panel {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-right: 20px;
 }
 
 .move-history h3 {
