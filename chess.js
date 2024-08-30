@@ -18,6 +18,53 @@ document.addEventListener('DOMContentLoaded', function() {
         leftLabels.appendChild(leftLabel);
     });
 
+
+    let whiteTime = 10 * 60;
+    let blackTime = 10 * 60;
+    let whiteTimerInterval = null;
+    let blackTimerInterval = null;
+    let isWhiteTurn = true;
+
+const whiteTimerElement = document.getElementById('white-timer');
+const blackTimerElement = document.getElementById('black-timer');
+
+function startWhiteTimer() {
+    if (whiteTimerInterval) clearInterval(whiteTimerInterval);
+    whiteTimerInterval = setInterval(() => {
+        whiteTime--;
+        updateTimerDisplay(whiteTimerElement, whiteTime);
+        if (whiteTime <= 0) {
+            clearInterval(whiteTimerInterval);
+            alert('White player ran out of time. Black wins!');
+        }
+    }, 1000);
+}
+
+function startBlackTimer() {
+    if (blackTimerInterval) clearInterval(blackTimerInterval);
+    blackTimerInterval = setInterval(() => {
+        blackTime--;
+        updateTimerDisplay(blackTimerElement, blackTime);
+        if (blackTime <= 0) {
+            clearInterval(blackTimerInterval);
+            alert('Black player ran out of time. White wins!');
+        }
+    }, 1000);
+}
+
+function stopTimers() {
+    clearInterval(whiteTimerInterval);
+    clearInterval(blackTimerInterval);
+}
+
+function updateTimerDisplay(element, time) {
+    const minutes = Math.floor(time / 60);
+    const seconds = time % 60;
+    element.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+}
+
+    startWhiteTimer();
+
     const initialBoard = [
         ['r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'],
         ['p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'],
@@ -46,7 +93,6 @@ document.addEventListener('DOMContentLoaded', function() {
         'K': 'cimg/whiteking.png'
     };
 
-    let isWhiteTurn = true;
     let enPassantTarget = null;
     let selectedPiece = null;
     let selectedPiecePosition = null;
@@ -85,7 +131,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
- 
+
     function clearHighlights() {
         const highlightedSquares = document.querySelectorAll('.highlight');
         highlightedSquares.forEach(square => {
@@ -100,36 +146,42 @@ document.addEventListener('DOMContentLoaded', function() {
         const [endRow, endCol] = targetSquare.split('').map(Number);
         const piece = window.board[startRow][startCol];
         const targetPiece = window.board[endRow][endCol];
-
+    
         if (selectedPiecePosition !== targetSquare) {
             const validMoves = getValidMoves(window.board, piece, selectedPiecePosition, enPassantTarget);
-
+    
             if (validMoves.includes(targetSquare)) {
                 const newBoard = simulateMove(window.board, selectedPiecePosition, targetSquare);
                 if (!isKingInCheck(newBoard, piece === piece.toUpperCase())) {
                     movePiece(selectedPiece, selectedPiecePosition, targetSquare);
-
-                    logMove(selectedPiece.src, selectedPiecePosition, targetSquare);
-
+    
                     if (piece.toLowerCase() === 'p' && Math.abs(startCol - endCol) === 1 && targetPiece === '') {
                         const captureRow = piece === piece.toUpperCase() ? endRow + 1 : endRow - 1;
                         window.board[captureRow][endCol] = '';
                         const captureElement = document.querySelector(`[data-square="${captureRow}${endCol}"] img`);
                         if (captureElement) captureElement.remove();
                     }
-
+    
                     window.board[endRow][endCol] = piece;
                     window.board[startRow][startCol] = '';
-
+    
                     if (piece.toLowerCase() === 'p' && Math.abs(startRow - endRow) === 2) {
                         enPassantTarget = { row: (startRow + endRow) / 2, col: startCol };
                     } else {
                         enPassantTarget = null;
                     }
-
+    
                     isWhiteTurn = !isWhiteTurn;
+    
+                    stopTimers();
+                    if (isWhiteTurn) {
+                        startWhiteTimer();
+                    } else {
+                        startBlackTimer();
+                    }
+    
                     clearHighlights();
-
+    
                     if (isKingInCheck(window.board, !isWhiteTurn)) {
                         console.log('Check!');
                         if (isCheckmate(window.board, !isWhiteTurn)) {
@@ -144,7 +196,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     }
- 
+    
     function logMove(pieceSrc, fromSquare, toSquare) {
         
         const moveHistory = document.getElementById('move-history');

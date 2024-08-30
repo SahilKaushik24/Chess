@@ -7,10 +7,15 @@
     <link rel="stylesheet" href="chess.css">
 </head>
 <body>
-    <button id="undo-button">Undo</button>
-    <button id="redo-button">Redo</button>
-
     <div id="chess-container" class="main">
+        <div id="left-panel">
+            <div id="controls">
+            <div id="black-timer" class="timer">10:00</div>
+            <button id="undo-button">Undo</button>
+            <button id="redo-button">Redo</button>
+        </div>
+            <div id="white-timer" class="timer">10:00</div>
+        </div>
         <div id="board-and-side-labels">
             <div id="left-labels" class="labels-column">
                 <div></div>
@@ -22,6 +27,7 @@
         </div>
         <div id="move-history" class="move-history">Move History</div>
     </div>
+
     <script src="chess.js"></script>
     <script src="moves.js"></script>
     <script src="checkmate.js"></script>
