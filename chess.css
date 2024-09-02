@@ -69,6 +69,7 @@
     background-color: rgba(0, 0, 0, 0.5);
     color: azure;
     width: 50px;
+    border-radius: 3px;
 }
 
 #redo-button {
@@ -76,17 +77,18 @@
     color: azure;
     width: 50px;
     margin-left: 70px;
+    border-radius: 3px;
 }
 
 #move-history {
-    margin-left: 20px;
-    width: 200px;
+    height:20px;
+    overflow-y: auto;
+    flex-grow: 1;
     background-color: rgba(0, 0, 0, 0.5);
     color: white;
     padding: 10px;
-    height: 100%;
-    overflow-y: auto;
     border-radius: 20px;
+    font-family: Arial, sans-serif;
 }
 
 .timer {
