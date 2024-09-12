@@ -18,7 +18,6 @@ document.addEventListener('DOMContentLoaded', function() {
         leftLabels.appendChild(leftLabel);
     });
 
-
     let whiteTime = 10 * 60;
     let blackTime = 10 * 60;
     let whiteTimerInterval = null;
@@ -171,6 +170,8 @@ function updateTimerDisplay(element, time) {
                         enPassantTarget = null;
                     }
     
+                    updateMoveHistory(selectedPiecePosition, targetSquare, piece);
+    
                     isWhiteTurn = !isWhiteTurn;
     
                     stopTimers();
@@ -197,15 +198,14 @@ function updateTimerDisplay(element, time) {
         }
     }
     
-    function logMove(pieceSrc, fromSquare, toSquare) {
-        
-        const moveHistory = document.getElementById('move-history');
-        const moveElement = document.createElement('p');
-        const pieceName = pieceSrc.split('/').pop().split('.')[0];
 
-        moveElement.textContent = `${pieceName.toUpperCase()} moved from ${fromSquare} to ${toSquare}`;
+    function updateMoveHistory(fromSquare, toSquare, piece) {
+        const moveHistory = document.getElementById('move-history');
+        const moveElement = document.createElement('div');
+        moveElement.textContent = `${piece} moved from ${fromSquare} to ${toSquare}`;
         moveHistory.appendChild(moveElement);
-    }
+        moveHistory.scrollTop = moveHistory.scrollHeight;
+    }  
 
     function movePiece(piece, fromSquare, toSquare) {
         moveHistory.push(JSON.parse(JSON.stringify(window.board)));

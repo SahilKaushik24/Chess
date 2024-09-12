@@ -133,7 +133,6 @@ function getBishopMoves(board, position, isWhite) {
     return moves;
 }
 
-
 function getQueenMoves(board, position , isWhite) {
    return [ ...getBishopMoves(board, position, isWhite),
             ...getRookMoves(board, position, isWhite)
